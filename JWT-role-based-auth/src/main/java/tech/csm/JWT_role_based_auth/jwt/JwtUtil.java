@@ -15,10 +15,9 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "mySecretKey123";
+    private final String SECRET = "mySecretKey123"; //secret to create & verify the signature-known by server only
 
     public String generateToken(String username, List<String> roles) {
-
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
 
@@ -29,13 +28,13 @@ public class JwtUtil {
                 .setExpiration(
                         new Date(System.currentTimeMillis() + 1000 * 60 * 30)
                 )
-                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))  //signature creation
                 .compact();
     }
 
-    public Claims extractClaims(String token) {
+    public Claims extractClaims(String token) { //token validation
         return Jwts.parserBuilder()
-                .setSigningKey(SECRET.getBytes())
+                .setSigningKey(SECRET.getBytes()) //signature verification
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

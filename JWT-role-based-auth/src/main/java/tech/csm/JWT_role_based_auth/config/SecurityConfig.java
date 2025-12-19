@@ -12,7 +12,7 @@ import tech.csm.JWT_role_based_auth.jwt.JwtFilter;
 
 @Configuration
 @EnableMethodSecurity
-public class SecurityConfig {
+public class SecurityConfig { //URL access rules, filter order
 
     @Autowired
     private JwtFilter jwtFilter;
@@ -23,16 +23,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) //no HTTP session, JWT per evry request
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/login").permitAll()  //no auth needed here,public URL
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); //JWT checked be spring default auth, sets user in security context
         return http.build();
     }
 }

@@ -18,8 +18,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+//this class is abt using a valid JWT to authenticate a request
+//bridge btw JWT & spring security
+//converts JWT to Spring Security authentication
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter {  //intercepts every request
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -31,26 +34,26 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain chain
     ) throws ServletException, IOException {
 
-        String header = request.getHeader("Authorization");
-
+        String header = request.getHeader("Authorization"); //extracting jwt frm header
         if (header != null && header.startsWith("Bearer ")) {
-
             String token = header.substring(7);
-            Claims claims = jwtUtil.extractClaims(token);
+            Claims claims = jwtUtil.extractClaims(token);  //validating token
 
             String username = claims.getSubject();
-            List<String> roles = (List<String>) claims.get("roles");
+            List<String> roles = (List<String>) claims.get("roles");  //extract identity & roles
 
             List<GrantedAuthority> authorities = new ArrayList<>();
             for (String role : roles) {
                 authorities.add(new SimpleGrantedAuthority(role));
             }
 
+//    //        Building Spring Security authentication
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(
                             username, null, authorities
                     );
 
+//            stores the auth in security context. who is the user of this request?
             SecurityContextHolder.getContext()
                     .setAuthentication(auth);
         }
