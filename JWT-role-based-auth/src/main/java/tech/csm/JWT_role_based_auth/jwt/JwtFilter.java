@@ -19,13 +19,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 //this class is abt using a valid JWT to authenticate a request
-//bridge btw JWT & spring security
+//bridge btwn JWT & spring security
 //converts JWT to Spring Security authentication
 @Component
 public class JwtFilter extends OncePerRequestFilter {  //intercepts every request
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Skip the filter for login endpoint
+        return request.getServletPath().equals("/auth/login");
+    }
 
     @Override
     protected void doFilterInternal(
@@ -36,8 +42,10 @@ public class JwtFilter extends OncePerRequestFilter {  //intercepts every reques
 
         String header = request.getHeader("Authorization"); //extracting jwt frm header
         if (header != null && header.startsWith("Bearer ")) {
+
+            //extract token
             String token = header.substring(7);
-            Claims claims = jwtUtil.extractClaims(token);  //validating token
+            Claims claims = jwtUtil.extractClaims(token); //validating token
 
             String username = claims.getSubject();
             List<String> roles = (List<String>) claims.get("roles");  //extract identity & roles
@@ -61,3 +69,12 @@ public class JwtFilter extends OncePerRequestFilter {  //intercepts every reques
         chain.doFilter(request, response);
     }
 }
+
+
+
+
+
+
+
+
+

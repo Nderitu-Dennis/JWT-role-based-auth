@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -12,6 +13,7 @@ import tech.csm.JWT_role_based_auth.jwt.JwtFilter;
 
 @Configuration
 @EnableMethodSecurity
+@EnableWebSecurity
 public class SecurityConfig { //URL access rules, filter order
 
     @Autowired
@@ -27,6 +29,7 @@ public class SecurityConfig { //URL access rules, filter order
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login").permitAll()  //no auth needed here,public URL
+                        .requestMatchers("/auth**","/error").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
