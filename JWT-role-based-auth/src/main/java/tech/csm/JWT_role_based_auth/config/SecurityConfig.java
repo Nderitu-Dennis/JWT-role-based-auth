@@ -3,7 +3,6 @@ package tech.csm.JWT_role_based_auth.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,7 +28,6 @@ public class SecurityConfig { //URL access rules, filter order
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) //no HTTP session, JWT per evry request
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //CORS temp fix
                         .requestMatchers("/auth/login").permitAll()  //no auth needed here,public URL
                         .requestMatchers("/auth**","/error").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")

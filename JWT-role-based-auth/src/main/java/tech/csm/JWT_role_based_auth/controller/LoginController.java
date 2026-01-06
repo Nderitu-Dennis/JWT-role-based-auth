@@ -2,6 +2,8 @@ package tech.csm.JWT_role_based_auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import tech.csm.JWT_role_based_auth.jwt.JwtUtil;
 import tech.csm.JWT_role_based_auth.dto.LoginRequest;
@@ -15,8 +17,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*") //fix CORS error in HTML
-
 public class LoginController {
 
     @Autowired
